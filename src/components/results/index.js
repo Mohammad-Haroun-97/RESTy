@@ -3,11 +3,13 @@ import React from 'react';
 
 export default function Results(props) {
   const {data}=props
+  console.log('data',data);
 
   return (
     <section>
-      <pre>{data ? JSON.stringify(data, undefined, 2) : null}</pre>
+      <pre data-testid='submit-result' >{data ? JSON.stringify(data, undefined, 2) : 'loading'}</pre>
     </section>
+    
   );
 
   
