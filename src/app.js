@@ -1,38 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "./app.scss";
 
 // Let's talk about using index.js and some other name in the component folder
 // There's pros and cons for each way of doing this ...
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Form from "./components/form";
-import Results from "./components/results";
+import Header from "./components/header/index";
+import Footer from "./components/footer/index";
+import Form from "./components/form/index";
+import Results from "./components/results/index";
+import axios from 'axios'
 
 function App() {
-  const [state, setState] = React.useState({
-    data: null,
-    requestParams: {},
-  });
-  const callApi = (requestParams) => {
+
+  let [data,setData]=useState(null)
+  let [requestParams,setRequestParams ]=useState({})
+  
+  const callApi = async (requestParams) => {
+
+    setRequestParams(requestParams)
     // mock output
-    const data = {
-      count: 2,
-      results: [
-        { name: "fake thing 1", url: "http://fakethings.com/1" },
-        { name: "fake thing 2", url: "http://fakethings.com/2" },
-      ],
+    let newEvent={
+      Body:[],
+      Headers: {}
     };
-    setState({ data, requestParams });
+
+    await axios.get(`${requestParams.url}`).then(collected=>{
+      console.log('collected',collected);
+       newEvent={Body : collected.data,
+          Headers : collected.headers} 
+    }) 
+
+    let count = newEvent.Body.length
+    
+
+    // console.log('newEvent',newEvent);
+    const data = {
+
+      count: count,
+      results: newEvent
+    };
+
+    // data.results=newEvent
+
+    console.log('dataaaaaaa',data);
+    setData(data);
+    
   };
+
+  // const options = {
+  //   method: 'post',
+  //   url: '/login',
+  //   data: {
+  //     firstName: 'Finn',
+  //     lastName: 'Williams'
+  //   },
+  // axios(options);
 
   return (
     <React.Fragment>
       <Header />
-      <div>Request Method: {state.requestParams.method}</div>
-      <div>URL: {state.requestParams.url}</div>
+      <div data-testid='method'>Request Method: {requestParams.method}</div>
+      <div>URL: {requestParams.url}</div>
       <Form handleApiCall={callApi} />
-      <Results data={state.data} />
+      <Results data={data} />
       <Footer />
     </React.Fragment>
   );
