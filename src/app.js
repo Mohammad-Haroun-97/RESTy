@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./app.scss";
 
@@ -14,21 +14,38 @@ function App() {
 
   let [data,setData]=useState(null)
   let [requestParams,setRequestParams ]=useState({})
-  
-  const callApi = async (requestParams) => {
 
-    setRequestParams(requestParams)
-    // mock output
+
+  useEffect( async()=>{
     let newEvent={
       Body:[],
       Headers: {}
     };
 
-    await axios.get(`${requestParams.url}`).then(collected=>{
-      console.log('collected',collected);
-       newEvent={Body : collected.data,
-          Headers : collected.headers} 
-    }) 
+
+    if (requestParams.method==='get') {
+      await axios.get(`${requestParams.url}`).then(collected=>{
+        console.log('collected',collected);
+         newEvent={Body : collected.data,
+            Headers : collected.headers} 
+      }) 
+    
+    }
+
+    if (requestParams.method==='post') {
+      let body=requestParams.body
+      await axios.post(`${requestParams.url}`,body).then(collected=>{
+       
+        console.log('collected',collected);
+         newEvent={Body : collected.data,
+            Headers : collected.headers} 
+      }) 
+    
+    }
+
+
+
+   
 
     let count = newEvent.Body.length
     
@@ -44,6 +61,15 @@ function App() {
 
     console.log('dataaaaaaa',data);
     setData(data);
+    
+  },[requestParams])
+
+  
+  
+  const callApi = async (requestParams) => {
+
+    setRequestParams(requestParams)
+    // mock output
     
   };
 
