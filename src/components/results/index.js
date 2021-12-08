@@ -7,7 +7,7 @@ export default function Results(props) {
 
   return (
     <section>
-      <pre data-testid='submit-result' >{data ? JSON.stringify(data, undefined, 2) : 'loading'}</pre>
+      <pre  data-testid='submit-result' >{data ? JSON.stringify(data, undefined, 2) : 'loading'}</pre>
     </section>
     
   );
